@@ -11,5 +11,5 @@ module.exports = {
 	seeds: {
 		directory: resolve(__dirname,'src','database','seeds')
 	},
-	useNullAsDefaul: true
+	useNullAsDefault: true
 };
