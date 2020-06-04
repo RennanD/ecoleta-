@@ -24,7 +24,7 @@ class CreatePointsService {
 		items
 	}: Request) {
 
-		// const trx = await knex.transaction();
+		const trx = await knex.transaction();
 
 		const point = {
 			image: 'image-fake',
@@ -37,7 +37,7 @@ class CreatePointsService {
 			uf,
 		}
 
-		const insertedIds = await knex('points').insert(point);
+		const insertedIds = await trx('points').insert(point);
 		const point_id = insertedIds[0];
 
 		const pointItems = items.map((item_id: number) => ({
@@ -45,7 +45,9 @@ class CreatePointsService {
 			point_id
 		}));
 
-		await knex('point_items').insert(pointItems);
+		await trx('point_items').insert(pointItems);
+
+		await trx.commit();
 
 		return {
 			id: point_id,

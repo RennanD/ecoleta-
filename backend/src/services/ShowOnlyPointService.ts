@@ -14,7 +14,14 @@ class ShowOnlyPointService {
 			throw new Error("Point not found")
 		}
 
-		return point;
+		const items = await knex('items')
+			.join('point_items', 'items.id', '=', 'point_items.item_id')
+			.where('point_items.point_id', id)
+
+		return {
+			...point,
+			items
+		};
 	}
 };
 

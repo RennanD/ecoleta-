@@ -2,10 +2,25 @@ import { Router } from 'express';
 
 import CreatePointsService from '../services/CreatePointsService';
 import ShowOnlyPointService from '../services/ShowOnlyPointService';
+import ListPointsByFilterService from '../services/ListPointsByFilterService';
 
-import itemsRouter from './items.routes'
 
 const pointRouter = Router();
+
+pointRouter.get('/', async (request, response) => {
+
+	const { city, uf, items } =  request.query;
+
+	const listPoints = new ListPointsByFilterService();
+
+	const points = await listPoints.execute({
+		city,
+		uf,
+		items
+	});
+
+	return response.json(points);
+});
 
 pointRouter.get('/:id', async (request, response) => {
 	const { id } = request.params;
@@ -15,15 +30,12 @@ pointRouter.get('/:id', async (request, response) => {
 	try {
 		const point = await showPoint.execute({ id });
 
-
-
 		return response.json(point);
 
 	} catch(err) {
 		return response.status(400).json({error: err.message})
 	}
-
-})
+});
 
 pointRouter.post('/', async (request, response) => {
 	const {
@@ -60,7 +72,6 @@ pointRouter.post('/', async (request, response) => {
 
 		return response.status(400).json({error: err.message})
 	}
-
 });
 
 export default pointRouter;
